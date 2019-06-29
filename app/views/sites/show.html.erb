@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Domain:</strong>
+  <%= @site.domain %>
+</p>
+
+<p>
+  <strong>Total Discussions:</strong>
+  <%= @site.discussions.size %>
+</p>
+
+<p>
+  <strong>Total Comments:</strong>
+  <%= @site.comments.size %>
+</p>
+
+<pre>
+  <%= h %Q(<div id="likes"></div>) %>
+  &lt;script src="<%= embed_page_likes_path(format: :js) %>"&gt;&lt;/script&gt;
+</pre>
+
+<%= link_to 'Edit', edit_site_path(@site) %> |
+<%= link_to 'Back', sites_path %>

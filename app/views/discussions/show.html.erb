@@ -1,0 +1,51 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Url:</strong>
+  <%= @discussion.url %>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @discussion.title %>
+</p>
+
+<p>
+  <strong>Comments count:</strong>
+  <%= @discussion.comments_count %>
+</p>
+
+<p>
+  <strong>Site:</strong>
+  <%= @discussion.site_id %>
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Author Name</th>
+      <th>Author Email</th>
+      <th>Body</th>
+      <th>Ip address</th>
+      <th>User agent</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @discussion.comments.each do |comment| %>
+      <tr>
+        <td><%= comment.name %></td>
+        <td><%= comment.email %></td>
+        <td><%= comment.body %></td>
+        <td><%= comment.ip_address %></td>
+        <td><%= comment.user_agent %></td>
+        <td><%= link_to 'Show', site_discussion_comment_path(@site, @discussion, comment) %></td>
+        <td><%= link_to 'Edit', edit_site_discussion_comment_path(@site, @discussion, comment) %></td>
+        <td><%= link_to 'Destroy', site_discussion_comment_path(@site, @discussion, comment), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= link_to 'Edit', edit_site_discussion_path(@site, @discussion) %> |
+<%= link_to 'Back', site_discussions_path(@site) %>
