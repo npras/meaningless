@@ -16,6 +16,11 @@
 </p>
 
 <p>
+  <strong>Likes</strong>
+  <%= @discussion.likes %>
+</p>
+
+<p>
   <strong>Site:</strong>
   <%= @discussion.site_id %>
 </p>
@@ -47,5 +52,7 @@
     <% end %>
   </tbody>
 </table>
+
+<%= link_to 'Comments path', site_discussion_comments_path(@site, @discussion) %> |
 <%= link_to 'Edit', edit_site_discussion_path(@site, @discussion) %> |
 <%= link_to 'Back', site_discussions_path(@site) %>

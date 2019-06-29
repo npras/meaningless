@@ -15,7 +15,7 @@ class DiscussionsController < ApplicationController
 
   # GET /discussions/new
   def new
-    @discussion = Discussion.new
+    @discussion = @site.discussions.new
   end
 
   # GET /discussions/1/edit
@@ -25,7 +25,7 @@ class DiscussionsController < ApplicationController
   # POST /discussions
   # POST /discussions.json
   def create
-    @discussion = Discussion.new(discussion_params)
+    @discussion = @site.discussions.new(discussion_params)
 
     respond_to do |format|
       if @discussion.save

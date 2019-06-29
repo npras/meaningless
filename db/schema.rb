@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 2019_06_29_105210) do
     t.string "url"
     t.string "title"
     t.integer "comments_count"
+    t.integer "likes", default: 0
     t.bigint "site_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

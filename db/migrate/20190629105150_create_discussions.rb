@@ -4,6 +4,7 @@ class CreateDiscussions < ActiveRecord::Migration[6.0]
       t.string :url
       t.string :title
       t.integer :comments_count
+      t.integer :likes, default: 0
       t.references :site, null: false, foreign_key: true
 
       t.timestamps

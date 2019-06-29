@@ -5,9 +5,11 @@ one:
   title: MyString
   comments_count: 1
   site: one
+  likes: 7777
 
 two:
   url: http://b.com/p1
   title: MyString
   comments_count: 1
   site: two
+  likes: 42
