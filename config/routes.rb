@@ -9,8 +9,8 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
-    namespace :v1 do
-    end
+    get 'discussion_likes' => 'discussion_likes#show'
+    #resources :discussion_comments, only: [:index, :create]
   end
 
   # /pageLikes.js
