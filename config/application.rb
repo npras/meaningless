@@ -15,5 +15,12 @@ module Meaningless
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
+
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'localhost:3001'
+        resource '*', headers: :any, methods: [:get, :post]
+      end
+    end
   end
 end

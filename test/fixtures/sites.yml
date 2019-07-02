@@ -1,11 +1,16 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+my_blog_local:
+  domain: localhost:3001
+  discussions_count: 0
+  comments_count: 0
+
 one:
-  domain: http://a.com
+  domain: a.com
   discussions_count: 1
   comments_count: 1
 
 two:
-  domain: http://b.com
+  domain: b.com
   discussions_count: 1
   comments_count: 1

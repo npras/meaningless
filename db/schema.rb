@@ -31,20 +31,19 @@ ActiveRecord::Schema.define(version: 2019_06_29_105210) do
 
   create_table "discussions", force: :cascade do |t|
     t.string "url"
-    t.string "title"
-    t.integer "comments_count"
+    t.integer "comments_count", default: 0
     t.integer "likes", default: 0
     t.bigint "site_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["site_id", "url"], name: "index_discussions_on_site_id_and_url", unique: true
     t.index ["site_id"], name: "index_discussions_on_site_id"
-    t.index ["url"], name: "index_discussions_on_url", unique: true
   end
 
   create_table "sites", force: :cascade do |t|
     t.string "domain"
-    t.integer "discussions_count"
-    t.integer "comments_count"
+    t.integer "discussions_count", default: 0
+    t.integer "comments_count", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["domain"], name: "index_sites_on_domain", unique: true

@@ -1,6 +1,9 @@
 (function(){
 
-  console.log('loaded from server changed!');
+  console.log(`Script loaded from ${apiUrl}!`)
+
+  const apiUrl = "http://localhost:3000"
+  const currentPageUrl = window.location.href
 
   function showCommentForm() {
     return `
@@ -29,7 +32,7 @@
     `;
   }
 
-  function showLikeForm() {
+  function showLikeWidget() {
     const html = `
        <span>
          <i id="likes-button">star</i>
@@ -41,36 +44,42 @@
   }
 
   function showLikesCount() {
-    const currentPageUrl = window.location.href
-
     const getLikes = async () => {
-      const url = new URL('http://localhost:3000/api/discussion_likes')
+      const likesUrl = new URL(`${apiUrl}/api/discussion_likes`)
       let params = { url: currentPageUrl }
-      url.search = new URLSearchParams(params)
-      let response = await fetch(url);
+      likesUrl.search = new URLSearchParams(params)
+      let response = await fetch(likesUrl);
       if (!response.ok) {
-        console.log("Some problem with the `${url}` page! So what?")
+        console.log(`Some problem with the ${likesUrl} page! So what?`)
         throw new Error(response.status)
       }
-      let data = await response.text()
-      return data;
+      let data = await response.json()
+      return data
     }
 
     getLikes()
-      .then(data => {
-        window.likesCount = data
-        document.querySelector('span#likes-count').innerText = data
+      .then(json => {
+        // console.log(JSON.stringify(json))
+        if (json.error) {
+          console.log(json.error)
+        } else {
+          //window.likesCount = json.likes
+          document.querySelector('span#likes-count').innerText = json.likes
+        }
       })
   }
 
+  function setupAbilityToLike() {
+    function handleLikeEvent() {
+
+    }
+    document.getElementById('likes-button').addEventListener("click", handleLikeEvent)
+  }
+
   function init() {
-    showLikeForm()
+    showLikeWidget()
     showLikesCount()
-
-    document.getElementById('likes-button').addEventListener("click", function() {
-      console.log('clickd!')
-    })
-
+    setupAbilityToLike()
   }
 
   // bootloader
