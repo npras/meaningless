@@ -1,9 +1,9 @@
 (function(){
 
-  console.log(`Script loaded from ${apiUrl}!`)
-
   const apiUrl = "http://localhost:3000"
   const currentPageUrl = window.location.href
+
+  console.log(`Script loaded from ${apiUrl}!`)
 
   function showCommentForm() {
     return `
@@ -69,10 +69,37 @@
       })
   }
 
-  function setupAbilityToLike() {
-    function handleLikeEvent() {
-
+  function handleLikeEvent() {
+    const postLike = async () => {
+      const likesUrl = `${apiUrl}/api/discussion_likes`
+      let response = await fetch(likesUrl, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ url: currentPageUrl })
+      })
+      if (!response.ok) {
+        console.log(`Some problem with the ${likesUrl} page! So what?`)
+        throw new Error(response.status)
+      }
+      let data = await response.json()
+      return data
     }
+
+    postLike()
+      .then(json => {
+        if (json.error) {
+          console.log(json.error)
+        } else {
+          //window.likesCount = json.likes
+          document.querySelector('span#likes-count').innerText = json.likes
+        }
+      })
+  }
+
+  function setupAbilityToLike() {
     document.getElementById('likes-button').addEventListener("click", handleLikeEvent)
   }
 
