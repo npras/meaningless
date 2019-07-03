@@ -17,3 +17,21 @@ two:
   body: MyText
   ip_address: MyString
   user_agent: MyString
+
+my_blog_comment_1:
+  discussion: my_blog_discussion
+  site: my_blog_local
+  name: Avdi Grimm
+  email: avdi@avdi.codes
+  body: This is a wonderful post!
+  ip_address: MyString
+  user_agent: MyString
+
+my_blog_comment_2:
+  discussion: my_blog_discussion
+  site: my_blog_local
+  name: Derek Sivers
+  email: derek@sivers.org
+  body: Yup. That's the way to do it.
+  ip_address: MyString
+  user_agent: MyString

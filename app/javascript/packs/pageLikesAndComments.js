@@ -5,33 +5,6 @@
 
   console.log(`Script loaded from ${apiUrl}!`)
 
-  function showCommentForm() {
-    return `
-      <header>
-        <h4>Leave a comment</h4>
-
-        <form action="http://localhost:3000/api/v1/comments" method="post">
-          <label for="author_name">Your Name</label>         
-          <input type="text" name="author_name" id="author_name" value="" />
-
-          <label for="email">Your Email &nbsp;
-            <span class="small">(private for my eyes only)</span>
-          </label>         
-          <input type="email" name="email" id="email" value="" />
-
-          <label for="comment">Comment</label>         
-          <textarea id="comment" name="comment" cols="80" rows="10"></textarea>
-
-          <input type="submit" name="submit" value="Submit comment>
-        </form>
-
-      </header>
-
-      <h3>Comments</h3>
-      <div id="comments"></div>
-    `;
-  }
-
   function showLikeWidget() {
     const html = `
        <span>
@@ -100,13 +73,85 @@
   }
 
   function setupAbilityToLike() {
-    document.getElementById('likes-button').addEventListener("click", handleLikeEvent)
+    document
+      .getElementById('likes-button')
+      .addEventListener("click", handleLikeEvent)
+  }
+
+  function showCommentForm() {
+    const html = `
+      <header id="comment-form">
+        <h4>Leave a comment</h4>
+
+        <form action="${apiUrl}/api/discussion_comments" method="post">
+          <div>
+            <label for="author_name">Your Name</label>         
+            <br>
+            <input type="text" name="author_name" id="author_name" value="" />
+          </div>
+
+          <div>
+            <label for="email">Your Email &nbsp;
+              <span class="small">(private for my eyes only)</span>
+            </label>         
+            <br>
+            <input type="email" name="email" id="email" value="" />
+          </div>
+
+          <div>
+            <label for="comment">Comment</label>         
+            <br>
+            <textarea id="comment" name="comment" cols="80" rows="10"></textarea>
+          </div>
+
+          <div>
+            <input type="submit" name="submit" value="Submit comment">
+          </div>
+        </form>
+
+      </header>
+
+      <h3>Comments</h3>
+      <div id="comments-list"></div>
+    `
+		document.getElementById('page-comments').innerHTML = html
+  }
+
+  function showComments() {
+    const getComments = async () => {
+      const commentsUrl = new URL(`${apiUrl}/api/discussion_comments`)
+      let params = { url: currentPageUrl }
+      commentsUrl.search = new URLSearchParams(params)
+      let response = await fetch(commentsUrl);
+      if (!response.ok) {
+        console.log(`Some problem with the ${commentsUrl} page! So what?`)
+        throw new Error(response.status)
+      }
+      let data = await response.json()
+      return data
+    }
+
+    getComments()
+      .then(json => {
+        if (json.error) {
+          console.log(json.error)
+        } else {
+          console.log(JSON.stringify(json.comments))
+          document.querySelector('#comments-list').innerText = json.comments
+        }
+      })
   }
 
   function init() {
+    // setup likes
     showLikeWidget()
     showLikesCount()
     setupAbilityToLike()
+
+    // setup comments
+    showCommentForm()
+    showComments()
+    //setupAbilityToComment()
   }
 
   // bootloader

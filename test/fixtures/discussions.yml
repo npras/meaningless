@@ -11,3 +11,9 @@ two:
   comments_count: 1
   site: two
   likes: 42
+
+my_blog_discussion:
+  url: /general/time-calculator/
+  comments_count: 2
+  site: my_blog_local
+  likes: 42
