@@ -127,18 +127,13 @@
         console.log(`Some problem with the ${commentsUrl} page! So what?`)
         throw new Error(response.status)
       }
-      let data = await response.json()
+      let data = await response.text()
       return data
     }
 
     getComments()
-      .then(json => {
-        if (json.error) {
-          console.log(json.error)
-        } else {
-          console.log(JSON.stringify(json.comments))
-          document.querySelector('#comments-list').innerText = json.comments
-        }
+      .then(text => {
+        document.querySelector('#comments-list').innerHTML = text
       })
   }
 

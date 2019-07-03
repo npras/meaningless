@@ -3,7 +3,7 @@ class Api::DiscussionCommentsController < ApiController
   before_action :set_discussion
 
   def index
-    render json: { comments: @discussion.comments }
+    @comments = @discussion.comments
   end
 
   def create

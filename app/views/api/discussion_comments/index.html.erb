@@ -1,2 +1,14 @@
-<h1>Api::DiscussionComments#index</h1>
-<p>Find me in app/views/api/discussion_comments/index.html.erb</p>
+<ol>
+
+  <% @comments.each do |comment| %>
+    <li id="comment-<%= comment.id %>">
+      <cite>
+        <%= comment.name %> (<%= comment.created_at.strftime('%B %d, %Y') %>)
+        <a href="#comment-<%= comment.id %>">#</a>
+      </cite>
+
+      <p><%= comment.body %></p>
+    </li>
+  <% end %>
+
+</ol>
