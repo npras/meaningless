@@ -80,14 +80,16 @@
 
   function showCommentForm() {
     const html = `
-      <header id="comment-form">
+      <header id="comment-form-section">
         <h4>Leave a comment</h4>
 
-        <form action="${apiUrl}/api/discussion_comments" method="post">
+        <form id="comment-form" action="${apiUrl}/api/discussion_comments" method="post">
+          <input type="hidden" name="url" value="${currentPageUrl}" />
+
           <div>
             <label for="author_name">Your Name</label>         
             <br>
-            <input type="text" name="author_name" id="author_name" value="" />
+            <input type="text" name="comment[author_name]" id="author_name" required value="" />
           </div>
 
           <div>
@@ -95,13 +97,13 @@
               <span class="small">(private for my eyes only)</span>
             </label>         
             <br>
-            <input type="email" name="email" id="email" value="" />
+            <input type="email" name="comment[email]" id="email" value="" required />
           </div>
 
           <div>
             <label for="comment">Comment</label>         
             <br>
-            <textarea id="comment" name="comment" cols="80" rows="10"></textarea>
+            <textarea id="comment" name="comment[body]" cols="80" rows="10" required></textarea>
           </div>
 
           <div>
@@ -137,6 +139,38 @@
       })
   }
 
+  function handleSubmitCommentEvent(e) {
+    e.preventDefault()
+    const postComment = async () => {
+      const formNode = document.getElementById('comment-form')
+      const formData = new FormData(formNode)
+      const commentUrl = new URL(`${apiUrl}/api/discussion_comments`)
+      let response = await fetch(commentUrl, {
+        method: 'POST',
+        body: formData
+      })
+      if (!response.ok) {
+        console.log(`Some problem with the ${commentUrl} page! So what?`)
+        throw new Error(response.status)
+      }
+      let data = await response.text()
+      return data
+    }
+
+    postComment()
+      .then(html => {
+        document
+          .querySelector('#comments-list > ol')
+          .insertAdjacentHTML('beforeend', html)
+      })
+  }
+
+  function setupAbilityToComment() {
+    document
+      .getElementById('comment-form')
+      .addEventListener("submit", handleSubmitCommentEvent)
+  }
+
   function init() {
     // setup likes
     showLikeWidget()
@@ -146,7 +180,7 @@
     // setup comments
     showCommentForm()
     showComments()
-    //setupAbilityToComment()
+    setupAbilityToComment()
   }
 
   // bootloader

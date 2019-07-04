@@ -1,2 +1,9 @@
-<h1>Api::DiscussionComments#create</h1>
-<p>Find me in app/views/api/discussion_comments/create.html.erb</p>
+<li id="comment-<%= @comment.id %>">
+  <cite>
+    <%= @comment.name %> (<%= @comment.created_at.strftime('%B %d, %Y') %>)
+    <a href="#comment-<%= @comment.id %>">#</a>
+  </cite>
+
+  <p><%= @comment.body %></p>
+</li>
+
