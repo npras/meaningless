@@ -9,6 +9,18 @@
   const _CURRENT_PAGE_URL = window.location.href
 
 
+
+
+  function escapeHtml(unsafe) {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;")
+  }
+  
+
   function appendAdjacentHtmlToNode(selector, html) {
     document
       .querySelector(selector)
@@ -74,6 +86,24 @@
   }
 
 
+  function fuckingStrftime(d) {
+    return `${d.toLocaleString('en-us', { month: 'long' })} ${d.getDate()}, ${d.getFullYear()}`
+  }
+
+
+  function makeLiHtmlForComment(comment) {
+    return `
+      <li id="comment-${comment.id}">
+        <cite>
+          ${escapeHtml(comment.name)} (${fuckingStrftime(new Date(comment.created_at))})
+          <a href="#comment-${comment.id}">#</a>
+        </cite>
+
+        <p>${escapeHtml(comment.body)}</p>
+      </li>
+    `
+  }
+
   function getAndShowLikesAndComments() {
     const getLikesAndComments = async () => {
       const apiUrl = new URL(_GET_LIKES_AND_COMMENTS_URL)
@@ -89,16 +119,7 @@
       const { likes, comments } = json
       document.querySelector('#page-likes > #likes-count').innerText = likes
 
-      let commentsLiHtml = comments.map(comment => (`
-            <li id="comment-${comment.id}">
-              <cite>
-                ${comment.name} (${comment.created_at})
-                <a href="#comment-${comment.id}">#</a>
-              </cite>
-
-              <p>${comment.body}</p>
-            </li>
-          `)).join('')
+      let commentsLiHtml = comments.map(c => makeLiHtmlForComment(c)).join('')
       const commentsHtml = `<ol> ${commentsLiHtml} </ol>`
       document.querySelector('#page-comments > #comments-list').innerHTML = commentsHtml
     }
@@ -109,11 +130,57 @@
 
   function handleLikeEvent() {
     const postLike = async () => {
+      let response = await fetch(_CREATE_LIKE_URL, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ url: _CURRENT_PAGE_URL })
+      })
+      handleNonOkResponse(response, _CREATE_LIKE_URL)
+      let responseJson = await response.json()
+      return responseJson
     }
+
+    postLike()
+      .then(json => {
+        document.querySelector('#page-likes > #likes-count').innerText = json.likes
+      })
   }
 
 
-  function handleSubmitCommentEvent() {}
+  function handleSubmitCommentEvent(e) {
+    e.preventDefault()
+    const formNode = document.getElementById('comment-form')
+    formNode.submit.value = "Submitting..."
+    formNode.submit.disabled = true
+
+    const postComment = async () => {
+      const formData = new FormData(formNode)
+      const apiUrl = new URL(_CREATE_COMMENT_URL)
+      let response = await fetch(apiUrl, {
+        method: 'POST',
+        body: formData
+      })
+      handleNonOkResponse(response, apiUrl)
+      let responseJson = await response.json()
+      return responseJson
+    }
+
+    postComment()
+      .then(json => {
+        formNode.reset()
+        formNode.submit.value = 'Submit comment'
+        formNode.submit.disabled = false
+        if (json.comment) {
+          const commentHtml = makeLiHtmlForComment(json.comment)
+          appendAdjacentHtmlToNode('#comments-list > ol', commentHtml)
+        } else {
+          console.log("Probably a spam comment.")
+        }
+      })
+  }
 
 
   function setupAbilityToLikeAndComment() {
@@ -127,7 +194,8 @@
   }
 
 
-  (function init() {
+  // initializer
+  (function () {
     setupPlaceholdersForLikesAndComments()
     getAndShowLikesAndComments()
     setupAbilityToLikeAndComment()
@@ -135,4 +203,3 @@
 
 
 }())
-

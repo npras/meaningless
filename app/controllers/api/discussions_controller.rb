@@ -38,6 +38,7 @@ class Api::DiscussionsController < ApiController
     }
 
     comment = if SpamChecker.new(comment_info).spam?
+                Rails.logger.warn("Comment is a spam!")
                  nil
                else
                  @discussion.comments.create(
