@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2019_06_29_105210) do
     t.text "body"
     t.string "ip_address"
     t.string "user_agent"
+    t.string "referrer"
     t.bigint "site_id", null: false
     t.bigint "discussion_id", null: false
     t.datetime "created_at", precision: 6, null: false

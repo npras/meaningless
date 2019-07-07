@@ -6,6 +6,7 @@ class CreateComments < ActiveRecord::Migration[6.0]
       t.text :body
       t.string :ip_address
       t.string :user_agent
+      t.string :referrer
       t.references :site, null: false, foreign_key: true
       t.references :discussion, null: false, foreign_key: true
 

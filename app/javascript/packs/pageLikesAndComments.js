@@ -1,90 +1,36 @@
 (function(){
 
-  const apiUrl = "http://localhost:3000"
-  const currentPageUrl = window.location.href
 
-  console.log(`Script loaded from ${apiUrl}!`)
+  const _API_URL = "http://localhost:3000"
+  const _GET_LIKES_AND_COMMENTS_URL = `${_API_URL}/api/discussion_likes_and_comments`
+  const _CREATE_LIKE_URL = `${_API_URL}/api/discussion_like`
+  const _CREATE_COMMENT_URL = `${_API_URL}/api/discussion_comment`
 
-  function showLikeWidget() {
-    const html = `
-       <span>
-         <i id="likes-button">star</i>
-         <span id="likes-count">0</span>
-       </span>
-    `;
+  const _CURRENT_PAGE_URL = window.location.href
 
-		document.getElementById('page-likes').innerHTML = html
-  }
 
-  function showLikesCount() {
-    const getLikes = async () => {
-      const likesUrl = new URL(`${apiUrl}/api/discussion_likes`)
-      let params = { url: currentPageUrl }
-      likesUrl.search = new URLSearchParams(params)
-      let response = await fetch(likesUrl);
-      if (!response.ok) {
-        console.log(`Some problem with the ${likesUrl} page! So what?`)
-        throw new Error(response.status)
-      }
-      let data = await response.json()
-      return data
-    }
-
-    getLikes()
-      .then(json => {
-        // console.log(JSON.stringify(json))
-        if (json.error) {
-          console.log(json.error)
-        } else {
-          //window.likesCount = json.likes
-          document.querySelector('span#likes-count').innerText = json.likes
-        }
-      })
-  }
-
-  function handleLikeEvent() {
-    const postLike = async () => {
-      const likesUrl = `${apiUrl}/api/discussion_likes`
-      let response = await fetch(likesUrl, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url: currentPageUrl })
-      })
-      if (!response.ok) {
-        console.log(`Some problem with the ${likesUrl} page! So what?`)
-        throw new Error(response.status)
-      }
-      let data = await response.json()
-      return data
-    }
-
-    postLike()
-      .then(json => {
-        if (json.error) {
-          console.log(json.error)
-        } else {
-          //window.likesCount = json.likes
-          document.querySelector('span#likes-count').innerText = json.likes
-        }
-      })
-  }
-
-  function setupAbilityToLike() {
+  function appendAdjacentHtmlToNode(selector, html) {
     document
-      .getElementById('likes-button')
-      .addEventListener("click", handleLikeEvent)
+      .querySelector(selector)
+      .insertAdjacentHTML('beforeend', html)
   }
 
-  function showCommentForm() {
-    const html = `
-      <header id="comment-form-section">
+
+  function setupPlaceholdersForLikesAndComments() {
+    const likeHtml = `
+       <section id="page-likes">
+         <i id="like-button">star</i>
+         <span id="likes-count">0</span>
+       </section>
+    `
+    appendAdjacentHtmlToNode('#page-likes-and-comments', likeHtml)
+
+    const commentFormAndListHtml = `
+      <section id="page-comments">
         <h4>Leave a comment</h4>
 
-        <form id="comment-form" action="${apiUrl}/api/discussion_comments" method="post">
-          <input type="hidden" name="url" value="${currentPageUrl}" />
+        <form id="comment-form" action="${_API_URL}/api/discussion_comment" method="post">
+          <input type="hidden" name="url" value="${_CURRENT_PAGE_URL}" />
 
           <div>
             <label for="author_name">Your Name</label>         
@@ -107,83 +53,86 @@
           </div>
 
           <div>
-            <input type="submit" name="submit" value="Submit comment">
+            <input type="submit" name="submit" class="submit-button" value="Submit comment">
           </div>
         </form>
 
-      </header>
-
-      <h3>Comments</h3>
-      <div id="comments-list"></div>
+        <h4>Comments</h4>
+        <div id="comments-list"></div>
+      </section>
     `
-		document.getElementById('page-comments').innerHTML = html
+    appendAdjacentHtmlToNode('#page-likes-and-comments', commentFormAndListHtml)
   }
 
-  function showComments() {
-    const getComments = async () => {
-      const commentsUrl = new URL(`${apiUrl}/api/discussion_comments`)
-      let params = { url: currentPageUrl }
-      commentsUrl.search = new URLSearchParams(params)
-      let response = await fetch(commentsUrl);
-      if (!response.ok) {
-        console.log(`Some problem with the ${commentsUrl} page! So what?`)
-        throw new Error(response.status)
-      }
-      let data = await response.text()
-      return data
+
+  function handleNonOkResponse(response, url) {
+    if (!response.ok) {
+      console.log(`Some problem with the ${url} page!`)
+      console.log(JSON.stringify(response))
+      throw new Error(response.status)
+    }
+  }
+
+
+  function getAndShowLikesAndComments() {
+    const getLikesAndComments = async () => {
+      const apiUrl = new URL(_GET_LIKES_AND_COMMENTS_URL)
+      let params = { url: _CURRENT_PAGE_URL }
+      apiUrl.search = new URLSearchParams(params)
+      let response = await fetch(apiUrl)
+      handleNonOkResponse(response, apiUrl)
+      let responseJson = await response.json()
+      return responseJson
     }
 
-    getComments()
-      .then(text => {
-        document.querySelector('#comments-list').innerHTML = text
-      })
-  }
+    const showLikesAndComments = json => {
+      const { likes, comments } = json
+      document.querySelector('#page-likes > #likes-count').innerText = likes
 
-  function handleSubmitCommentEvent(e) {
-    e.preventDefault()
-    const postComment = async () => {
-      const formNode = document.getElementById('comment-form')
-      const formData = new FormData(formNode)
-      const commentUrl = new URL(`${apiUrl}/api/discussion_comments`)
-      let response = await fetch(commentUrl, {
-        method: 'POST',
-        body: formData
-      })
-      if (!response.ok) {
-        console.log(`Some problem with the ${commentUrl} page! So what?`)
-        throw new Error(response.status)
-      }
-      let data = await response.text()
-      return data
+      let commentsLiHtml = comments.map(comment => (`
+            <li id="comment-${comment.id}">
+              <cite>
+                ${comment.name} (${comment.created_at})
+                <a href="#comment-${comment.id}">#</a>
+              </cite>
+
+              <p>${comment.body}</p>
+            </li>
+          `)).join('')
+      const commentsHtml = `<ol> ${commentsLiHtml} </ol>`
+      document.querySelector('#page-comments > #comments-list').innerHTML = commentsHtml
     }
 
-    postComment()
-      .then(html => {
-        document
-          .querySelector('#comments-list > ol')
-          .insertAdjacentHTML('beforeend', html)
-      })
+    getLikesAndComments().then(showLikesAndComments)
   }
 
-  function setupAbilityToComment() {
+
+  function handleLikeEvent() {
+    const postLike = async () => {
+    }
+  }
+
+
+  function handleSubmitCommentEvent() {}
+
+
+  function setupAbilityToLikeAndComment() {
+    document
+      .getElementById('like-button')
+      .addEventListener("click", handleLikeEvent)
+
     document
       .getElementById('comment-form')
       .addEventListener("submit", handleSubmitCommentEvent)
   }
 
-  function init() {
-    // setup likes
-    showLikeWidget()
-    showLikesCount()
-    setupAbilityToLike()
 
-    // setup comments
-    showCommentForm()
-    showComments()
-    setupAbilityToComment()
-  }
+  (function init() {
+    setupPlaceholdersForLikesAndComments()
+    getAndShowLikesAndComments()
+    setupAbilityToLikeAndComment()
+  })()
 
-  // bootloader
-  init()
 
 }())
+

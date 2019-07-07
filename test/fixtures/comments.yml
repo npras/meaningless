@@ -8,6 +8,7 @@ one:
   body: MyText
   ip_address: MyString
   user_agent: MyString
+  referrer: ref1
 
 two:
   discussion: two
@@ -17,6 +18,7 @@ two:
   body: MyText
   ip_address: MyString
   user_agent: MyString
+  referrer: ref2
 
 my_blog_comment_1:
   discussion: my_blog_discussion
@@ -26,6 +28,7 @@ my_blog_comment_1:
   body: This is a wonderful post!
   ip_address: MyString
   user_agent: MyString
+  referrer: ref2
 
 my_blog_comment_2:
   discussion: my_blog_discussion
@@ -35,3 +38,4 @@ my_blog_comment_2:
   body: Yup. That's the way to do it.
   ip_address: MyString
   user_agent: MyString
+  referrer: ref2

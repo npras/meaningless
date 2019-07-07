@@ -1,3 +1,5 @@
+<% if @comment %>
+
 <li id="comment-<%= @comment.id %>">
   <cite>
     <%= @comment.name %> (<%= @comment.created_at.strftime('%B %d, %Y') %>)
@@ -7,3 +9,4 @@
   <p><%= @comment.body %></p>
 </li>
 
+<% end %>

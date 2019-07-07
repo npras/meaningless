@@ -9,10 +9,10 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
-    get 'discussion_likes' => 'discussion_likes#show'
-    post 'discussion_likes' => 'discussion_likes#create'
+    get 'discussion_likes_and_comments' => 'discussions#likes_and_comments'
 
-    resources :discussion_comments, only: [:index, :create]
+    post 'discussion_like' => 'discussions#create_like'
+    post 'discussion_comment' => 'discussions#create_comment'
   end
 
   # /pageLikesAndComments.js

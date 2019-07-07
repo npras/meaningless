@@ -7,12 +7,6 @@ class Api::DiscussionCommentsController < ApiController
   end
 
   def create
-    @comment = @discussion.comments.create(
-      name: params[:comment][:author_name],
-      email: params[:comment][:email],
-      body: params[:comment][:body],
-      site: @site,
-    )
   end
 
   private def set_discussion
