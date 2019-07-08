@@ -24,7 +24,11 @@ class SpamChecker
       user_role: @user_role,
     }
     response = http_client.post(comment_check_url, body: parameterize(opts))
-    response.body.to_s == 'true'
+    is_spam = (response.body.to_s == 'true')
+    if is_spam
+      Rails.logger.warn("👺 👺  Comment is a spam! Akimset response headers: #{response.headers.to_h}")
+    end
+    is_spam
   end
 
   def validate_key!
@@ -36,9 +40,9 @@ class SpamChecker
   end
 
   private def parameterize(h)
-    h.map { |k, v|
-      "#{k}=#{CGI.escape(v.to_s)}"
-    }.join('&')
+    h
+      .map { |k, v| "#{k}=#{CGI.escape(v.to_s)}" }
+      .join('&')
   end
 
   private def http_client
@@ -67,11 +71,12 @@ if __FILE__ == $0
     user_ip: '123.201.249.243',
     user_agent: 'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
     referrer: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript',
-    #comment_author: 'viagra-test-123',
-    comment_author: 'Prasanna',
+    comment_author: 'viagra-test-123',
+    #comment_author: 'Prasanna',
     comment_author_email: 'pras@pras.co',
     comment_content: 'this is really nice. I love it',
     user_role: '',
+    #user_role: 'administrator',
     api_key: '48d606a4e16f',
   }
 

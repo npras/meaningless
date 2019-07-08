@@ -21,14 +21,36 @@
   }
   
 
-  function appendAdjacentHtmlToNode(selector, html) {
+  function appendAdjacentHtmlToNode(selector, html, position='beforeend') {
     document
       .querySelector(selector)
-      .insertAdjacentHTML('beforeend', html)
+      .insertAdjacentHTML(position, html)
   }
 
 
   function setupPlaceholdersForLikesAndComments() {
+    const styleHtml = `
+    <style>
+      #page-likes-and-comments .submit-button {
+        background-color: #f44336;
+        border: none;
+        color: white;
+        padding: 10px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 1.1em;
+        margin: 4px 2px;
+        cursor: pointer;
+      }
+
+      #page-likes-and-comments .submit-button:disabled {
+        background-color: gray;
+      }
+    <style>
+    `
+    appendAdjacentHtmlToNode('#page-likes-and-comments', styleHtml, 'afterbegin')
+
     const likeHtml = `
        <section id="page-likes">
          <i id="like-button">star</i>
@@ -177,7 +199,7 @@
           const commentHtml = makeLiHtmlForComment(json.comment)
           appendAdjacentHtmlToNode('#comments-list > ol', commentHtml)
         } else {
-          console.log("Probably a spam comment.")
+          console.log("Probably a spam comment 👺.")
         }
       })
   }
