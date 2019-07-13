@@ -30,7 +30,7 @@
     const styleHtml = `
     <style>
       #page-likes-and-comments .submit-button {
-        background-color: #f44336;
+        background-color: teal;
         border: none;
         color: white;
         padding: 10px 15px;
@@ -69,6 +69,10 @@
         font-weight: 600;
         color: #fbb73e;
         color: #000;
+      }
+
+      #page-likes-and-comments .gray-text {
+        color: gray;
       }
     <style>
     `
@@ -120,7 +124,7 @@
           </div>
         </form>
 
-        <h4>Comments</h4>
+        <h4>Comments (<span id="comments-count">0</span>)</h4>
         <div id="comments-list"></div>
       </section>
     `
@@ -160,7 +164,7 @@
     return `
       <li id="comment-${comment.id}">
         <cite>
-          ${escapeHtml(comment.name)} (${fuckingStrftime(new Date(comment.created_at))})
+          ${escapeHtml(comment.name)} <small class="gray-text">(${fuckingStrftime(new Date(comment.created_at))})</small>
           <a href="#comment-${comment.id}">#</a>
         </cite>
 
@@ -185,6 +189,7 @@
       let commentsLiHtml = comments.map(c => makeLiHtmlForComment(c)).join('')
       const commentsHtml = `<ol> ${commentsLiHtml} </ol>`
       document.querySelector('#page-likes > #likes-count').innerText = likes
+      document.querySelector('#page-comments #comments-count').innerText = comments.length
       document.querySelector('#page-comments > #comments-list').innerHTML = commentsHtml
     }
 
@@ -270,12 +275,34 @@
   }
 
 
-  // initializer
-  (function () {
+  function LoadDiscussionLikesAndComments() {
+    if (isLoaded) { return }
+    console.log('We Hit Bottom. Loading discussion details now...')
     setupPlaceholdersForLikesAndComments()
     getAndShowLikesAndComments()
     setupAbilityToLikeAndComment()
-  })()
+		isLoaded = true
+		window.onscroll = null
+  }
+
+
+  function weHitBottom() {
+    var contentHeight = document.querySelector('main > section.content').offsetHeight
+    var y1 = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop
+    var y2 = (window.innerHeight !== undefined) ? window.innerHeight : document.documentElement.clientHeight
+    var y = y1 + y2
+    if (y >= contentHeight) { LoadDiscussionLikesAndComments() }
+  }
+
+
+  function init() {
+    weHitBottom()
+    if(isLoaded === false) { window.onscroll = weHitBottom }
+  }
+
+  // initializer code
+  let isLoaded = false
+  init()
 
 
 }())
