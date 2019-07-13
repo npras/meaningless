@@ -9,8 +9,6 @@
   const _CURRENT_PAGE_URL = window.location.href
 
 
-
-
   function escapeHtml(unsafe) {
     return unsafe
       .replace(/&/g, "&amp;")
@@ -28,7 +26,7 @@
   }
 
 
-  function setupPlaceholdersForLikesAndComments() {
+  function setupStyleHtml() {
     const styleHtml = `
     <style>
       #page-likes-and-comments .submit-button {
@@ -44,21 +42,52 @@
         cursor: pointer;
       }
 
-      #page-likes-and-comments .submit-button:disabled {
+      #page-likes-and-comments button#like-button {
+        background-color: teal;
+        border: none;
+        color: white;
+        padding: 3px 5px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 1.1em;
+        margin: 4px 2px;
+        cursor: pointer;
+      }
+
+      #page-likes-and-comments .submit-button:disabled,
+      #page-likes-and-comments #like-button:disabled {
         background-color: gray;
+      }
+
+      #page-likes-and-comments #likes-count {
+        display: inline-block;
+        vertical-align: top;
+        margin-top: 8px;
+        margin-left: 3px;
+        font-family: 'Source Sans Pro',sans-serif;
+        font-weight: 600;
+        color: #fbb73e;
+        color: #000;
       }
     <style>
     `
     appendAdjacentHtmlToNode('#page-likes-and-comments', styleHtml, 'afterbegin')
+  }
 
+
+  function setupLikeHtml() {
     const likeHtml = `
        <section id="page-likes">
-         <i id="like-button">star</i>
+         <span><button id="like-button">Like</button></span>
          <span id="likes-count">0</span>
        </section>
     `
     appendAdjacentHtmlToNode('#page-likes-and-comments', likeHtml)
+  }
 
+
+  function setupCommentFormAndListHtml() {
     const commentFormAndListHtml = `
       <section id="page-comments">
         <h4>Leave a comment</h4>
@@ -99,20 +128,34 @@
   }
 
 
-  function handleNonOkResponse(response, url) {
+  function setupPlaceholdersForLikesAndComments() {
+    setupStyleHtml()
+    setupLikeHtml()
+    setupCommentFormAndListHtml()
+  }
+
+
+  function handleResponseIfNotOk(response, url) {
     if (!response.ok) {
-      console.log(`Some problem with the ${url} page!`)
-      console.log(JSON.stringify(response))
-      throw new Error(response.status)
+      throw new Error(`Response status: ${response.status}. Something wrong with ${url}!`)
     }
   }
 
 
+  // July 6, 2019
   function fuckingStrftime(d) {
     return `${d.toLocaleString('en-us', { month: 'long' })} ${d.getDate()}, ${d.getFullYear()}`
   }
 
 
+  // <li id="comment-628415769">
+  //   <cite>
+  //     Avdi Grimm (July 6, 2019)
+  //     <a href="#comment-628415769">#</a>
+  //   </cite>
+
+  //   <p>This is a wonderful post!</p>
+  // </li>
   function makeLiHtmlForComment(comment) {
     return `
       <li id="comment-${comment.id}">
@@ -132,25 +175,28 @@
       let params = { url: _CURRENT_PAGE_URL }
       apiUrl.search = new URLSearchParams(params)
       let response = await fetch(apiUrl)
-      handleNonOkResponse(response, apiUrl)
+      handleResponseIfNotOk(response, apiUrl)
       let responseJson = await response.json()
       return responseJson
     }
 
     const showLikesAndComments = json => {
       const { likes, comments } = json
-      document.querySelector('#page-likes > #likes-count').innerText = likes
-
       let commentsLiHtml = comments.map(c => makeLiHtmlForComment(c)).join('')
       const commentsHtml = `<ol> ${commentsLiHtml} </ol>`
+      document.querySelector('#page-likes > #likes-count').innerText = likes
       document.querySelector('#page-comments > #comments-list').innerHTML = commentsHtml
     }
 
-    getLikesAndComments().then(showLikesAndComments)
+    getLikesAndComments()
+      .then(showLikesAndComments)
   }
 
 
   function handleLikeEvent() {
+    const likeBtnNode = document.getElementById('like-button')
+    likeBtnNode.innerText = "Liking..."
+    likeBtnNode.disabled = true
     const postLike = async () => {
       let response = await fetch(_CREATE_LIKE_URL, {
         method: 'POST',
@@ -160,7 +206,7 @@
         },
         body: JSON.stringify({ url: _CURRENT_PAGE_URL })
       })
-      handleNonOkResponse(response, _CREATE_LIKE_URL)
+      handleResponseIfNotOk(response, _CREATE_LIKE_URL)
       let responseJson = await response.json()
       return responseJson
     }
@@ -168,6 +214,11 @@
     postLike()
       .then(json => {
         document.querySelector('#page-likes > #likes-count').innerText = json.likes
+      })
+      .catch(error => console.log(error) )
+      .then(() => {
+        likeBtnNode.innerText = "Like"
+        likeBtnNode.disabled = false
       })
   }
 
@@ -185,22 +236,25 @@
         method: 'POST',
         body: formData
       })
-      handleNonOkResponse(response, apiUrl)
+      handleResponseIfNotOk(response, apiUrl)
       let responseJson = await response.json()
       return responseJson
     }
 
     postComment()
       .then(json => {
-        formNode.reset()
-        formNode.submit.value = 'Submit comment'
-        formNode.submit.disabled = false
         if (json.comment) {
           const commentHtml = makeLiHtmlForComment(json.comment)
           appendAdjacentHtmlToNode('#comments-list > ol', commentHtml)
         } else {
           console.log("Probably a spam comment 👺.")
         }
+      })
+      .catch(error => console.log(error) )
+      .then(() => {
+        formNode.reset()
+        formNode.submit.value = 'Submit comment'
+        formNode.submit.disabled = false
       })
   }
 
