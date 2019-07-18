@@ -1,4 +1,7 @@
 class SitesController < ApplicationController
+
+  before_action :authorize
+
   before_action :set_site, only: [:show, :edit, :update, :destroy]
 
   # GET /sites

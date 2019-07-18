@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: one@one.com
+  name: MyString1
+  password_digest: <%= BCrypt::Password.create('devpassword123') %>
+  remember_token: 'asdbasdf'
+
+two:
+  email: two@two.com
+  name: MyString2
+  password_digest: MyString
+  remember_token: 'axdbasdf'
