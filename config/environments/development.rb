@@ -61,4 +61,16 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+  config.action_mailer.delivery_method = :smtp
+  mailgun_creds = Rails.application.credentials.mailgun
+  config.action_mailer.smtp_settings = {
+    address: mailgun_creds[:address],
+    port: mailgun_creds[:port],
+    domain: mailgun_creds[:domain],
+    user_name: mailgun_creds[:user_name],
+    password: mailgun_creds[:password],
+    authentication: 'plain',
+    enable_starttls_auto: true,
+  }
 end
