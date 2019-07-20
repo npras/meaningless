@@ -32,7 +32,7 @@
   </nav>
 
   <% flash.each do |name, msg| %>
-    <%= tag.div msg, id: "flash_#{name}" %>
+    <%= tag.div msg, id: name %>
   <% end %>
 </header>
 

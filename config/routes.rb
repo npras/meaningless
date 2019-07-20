@@ -5,8 +5,11 @@ Rails.application.routes.draw do
 
 
   resources :users
-  resources :sessions, only: [:new, :create, :destroy]
-  resources :password_resets, only: [:new, :edit, :create, :update]
+
+  scope module: :pras_devise do
+    resources :sessions, only: [:new, :create, :destroy]
+    resources :password_resets, only: [:new, :edit, :create, :update]
+  end
 
   resources :sites do
     resources :discussions do
