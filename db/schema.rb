@@ -51,13 +51,16 @@ ActiveRecord::Schema.define(version: 2019_07_13_081542) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email", null: false
     t.string "name"
+    t.string "email", null: false
     t.string "password_digest"
     t.string "remember_token"
+    t.string "password_reset_token"
+    t.datetime "password_reset_sent_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["password_reset_token"], name: "index_users_on_password_reset_token", unique: true
     t.index ["remember_token"], name: "index_users_on_remember_token", unique: true
   end
 

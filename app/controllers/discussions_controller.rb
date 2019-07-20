@@ -1,4 +1,7 @@
 class DiscussionsController < ApplicationController
+
+  before_action :authenticate_user!
+
   before_action :set_site
   before_action :set_discussion, only: [:show, :edit, :update, :destroy]
 

@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   end
   helper_method :current_user
 
-  private def authorize
+  private def authenticate_user!
     redirect_to new_session_path, alert: "Not authorized!" if current_user.nil?
   end
 
