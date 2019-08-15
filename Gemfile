@@ -57,3 +57,4 @@ gem 'http', '~> 4.1', '>= 4.1.1'
 # Use Active Model has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 gem 'recaptcha', '~> 5.1'
+gem 'annotate', '~> 2.7', '>= 2.7.5', group: :development

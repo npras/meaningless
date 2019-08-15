@@ -34,3 +34,24 @@ class User < ApplicationRecord
   end
 
 end
+
+# == Schema Information
+#
+# Table name: users
+#
+#  id                     :bigint           not null, primary key
+#  email                  :string           not null
+#  name                   :string
+#  password_digest        :string
+#  password_reset_sent_at :datetime
+#  password_reset_token   :string
+#  remember_token         :string
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_email                 (email) UNIQUE
+#  index_users_on_password_reset_token  (password_reset_token) UNIQUE
+#  index_users_on_remember_token        (remember_token) UNIQUE
+#
