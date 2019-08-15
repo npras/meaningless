@@ -21,11 +21,7 @@
     <%= link_to 'forgot password?', new_password_reset_path %>
   </div>
 
-  <% if @show_checkbox_recaptcha %>
-    <%= recaptcha_tags(site_key: @v2_site_key) %>
-  <% else %>
-    <%= recaptcha_v3(site_key: @v3_site_key, action: :login) %>
-  <% end %>
+  <%= recaptcha_tags(site_key: @v2_site_key) %>
 
   <div class="actions"><%= f.submit "Log In", data: { "disable-with": "Logging in..." } %></div>
 <% end %>
