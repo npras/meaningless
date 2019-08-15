@@ -2,8 +2,8 @@ require 'cgi'
 
 class SpamChecker
 
-  def initialize(blog:, user_ip:, user_agent:, referrer: nil,
-                 comment_author: nil, comment_author_email: nil,
+  def initialize(blog:, user_ip:, user_agent:,
+                 referrer: nil, comment_author: nil, comment_author_email: nil,
                  comment_content: nil, user_role: nil,
                  api_key: Rails.application.credentials.akimset[:api_key])
     method(__method__).parameters.map do |_, name|

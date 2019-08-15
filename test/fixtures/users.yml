@@ -3,7 +3,7 @@
 one:
   email: one@one.com
   name: MyString1
-  password_digest: <%= BCrypt::Password.create('devpassword123') %>
+  password_digest: <%= BCrypt::Password.create('password') %>
   remember_token: 'asdbasdf'
   password_reset_token: 'blahblah'
   password_reset_sent_at: <%= DateTime.current %>
@@ -11,7 +11,7 @@ one:
 two:
   email: two@two.com
   name: MyString2
-  password_digest: MyString
+  password_digest: <%= BCrypt::Password.create('password') %>
   remember_token: 'axdbasdf'
   password_reset_token: 'blahblah1'
   password_reset_sent_at: <%= DateTime.current %>

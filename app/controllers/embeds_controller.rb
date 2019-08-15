@@ -7,7 +7,10 @@ class EmbedsController < ApplicationController
 
   def page_likes_and_comments
     respond_to do |format|
-      format.js { redirect_to sources_from_manifest_entries(['pageLikesAndComments'], type: :javascript).first }
+      format.js do
+        redirect_to(sources_from_manifest_entries(['pageLikesAndComments'],
+                                                  type: :javascript).first)
+      end
       #format.css
     end
   end

@@ -15,11 +15,16 @@
   <%= @site.comments.size %>
 </p>
 
-<pre>
-  <%= h %Q(<div id="page-likes"></div>) %>
-  <%= h %Q(<div id="page-comments"></div>) %>
-  &lt;script src="<%= embed_page_likes_and_comments_path(format: :js) %>"&gt;&lt;/script&gt;
-</pre>
+<div>
+<h4>Get comments and likes for your site!</h4>
+  <p>
+  Copy and put this snippet in your site's html, just before the closing body tag.
+  </p>
+  <pre>
+    <%= h %Q(<div id="page-likes-and-comments"></div>) %>
+    &lt;script src="<%= embed_page_likes_and_comments_url(format: :js) %>"&gt;&lt;/script&gt;
+  </pre>
+</div>
 
 <%= link_to 'Discussions path', site_discussions_path(@site) %> |
 <%= link_to 'Edit', edit_site_path(@site) %> |

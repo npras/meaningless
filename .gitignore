@@ -21,7 +21,9 @@
 .byebug_history
 
 # Ignore master key for decrypting credentials and more.
+# And other environment keys too.
 /config/master.key
+/config/credentials/*.key
 
 /public/packs
 /public/packs-test
@@ -29,3 +31,4 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
