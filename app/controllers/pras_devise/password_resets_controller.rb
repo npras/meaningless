@@ -1,10 +1,13 @@
 module PrasDevise
   class PasswordResetsController < PrasDeviseController
 
+    before_action :load_recaptcha_secrets, only: %i(new create)
+
     def new
     end
 
     def create
+      check_captcha(action_to_render_on_fail: :new); return if performed?
       user = User.find_by(email: params[:email])
       user&.send_password_reset!
 

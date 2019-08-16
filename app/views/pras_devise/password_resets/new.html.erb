@@ -1,11 +1,13 @@
 <h1>Reset Password</h1>
 
-<%= form_with url: password_resets_path do |f| %>
+<%= form_with url: password_resets_path, local: true do |f| %>
 
   <div class="field">
     <%= f.label :email %><br />
     <%= f.email_field :email %>
   </div>
+
+  <%= recaptcha_tags(site_key: @v2_site_key) %>
 
   <div class="actions"><%= f.submit "Reset Password" %></div>
 
