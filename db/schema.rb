@@ -57,11 +57,17 @@ ActiveRecord::Schema.define(version: 2019_07_13_081542) do
     t.string "remember_token"
     t.string "password_reset_token"
     t.datetime "password_reset_sent_at"
+    t.string "confirmation_token"
+    t.string "unconfirmed_email"
+    t.datetime "confirmation_sent_at"
+    t.datetime "confirmed_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["password_reset_token"], name: "index_users_on_password_reset_token", unique: true
     t.index ["remember_token"], name: "index_users_on_remember_token", unique: true
+    t.index ["unconfirmed_email"], name: "index_users_on_unconfirmed_email", unique: true
   end
 
   add_foreign_key "comments", "discussions"

@@ -3,12 +3,12 @@ module PrasDevise
 
     before_action :set_user, only: :create
     before_action :load_recaptcha_secrets, only: %i(new create)
-    before_action :check_captcha, only: :create
 
     def new
     end
 
     def create
+      check_captcha(action_to_render_on_fail: :new); return if performed?
       if @user&.authenticate(params[:password])
         login!
         redirect_to after_sign_in_path_for(:user), notice: "Logged in!"
@@ -34,13 +34,6 @@ module PrasDevise
 
     private def set_user
       @user = User.find_by(email: params[:email])
-    end
-
-    private def check_captcha
-      @recaptcha_success_v2 = verify_recaptcha(site_key: @v2_site_key,
-                                               secret_key: @v2_secret_key)
-
-      render :new and return unless @recaptcha_success_v2
     end
 
   end

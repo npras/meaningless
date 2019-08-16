@@ -32,5 +32,7 @@
     <%= f.password_field :password_confirmation %>
   </div>
 
+  <%= recaptcha_tags(site_key: @v2_site_key) %>
+
   <div class="actions"><%= f.submit "Sign Up", data: { "disable-with": "Saving..." } %></div>
 <% end %>

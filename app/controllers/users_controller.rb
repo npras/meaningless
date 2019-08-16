@@ -1,11 +1,15 @@
 class UsersController < ApplicationController
 
+  before_action :load_recaptcha_secrets, only: %i(new create)
+
   def new
     @user = User.new
   end
 
+  # coming from signup form
   def create
     @user = User.new(user_params)
+    check_captcha(action_to_render_on_fail: :new); return if performed?
     @user.generate_token(:remember_token)
 
     if @user.save

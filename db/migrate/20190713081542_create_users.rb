@@ -11,11 +11,20 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :password_reset_token
       t.datetime :password_reset_sent_at
 
+      t.string :confirmation_token
+      t.string :unconfirmed_email
+      t.datetime :confirmation_sent_at
+      t.datetime :confirmed_at
+
       t.timestamps
     end
 
     add_index :users, :email, unique: true
     add_index :users, :remember_token, unique: true
+
     add_index :users, :password_reset_token, unique: true
+
+    add_index :users, :confirmation_token, unique: true
+    add_index :users, :unconfirmed_email, unique: true
   end
 end
