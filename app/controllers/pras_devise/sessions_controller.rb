@@ -1,8 +1,9 @@
 module PrasDevise
   class SessionsController < PrasDeviseController
 
-    before_action :set_user, only: :create
     before_action :load_recaptcha_secrets, only: %i(new create)
+    before_action :set_user, only: :create
+    before_action :require_confirmation!, only: :create
 
     def new
     end
@@ -24,7 +25,20 @@ module PrasDevise
       redirect_to root_url, notice: "Logged out!"
     end
 
+    # TODO: also make sure token is recently issued
+    private def require_confirmation!
+      if @user.confirmed_at.blank?
+        # Don't give any clue
+        flash.now.alert = "Email or password is invalid"
+        render :new
+      end
+    end
+
     private def login!
+      unless @user.remember_token
+        @user.generate_token(:remember_token)
+        @user.save
+      end
       if params[:remember_me]
         cookies.encrypted.permanent[:remember_token] = @user.remember_token
       else

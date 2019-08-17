@@ -11,7 +11,6 @@ module PrasDevise
       check_captcha; return if performed?
       user = User.find_by(email: params[:email])
       user&.send_password_reset!
-
       redirect_to root_url, notice: "If you had registered, you'd receive password reset email shortly"
     end
 

@@ -87,4 +87,10 @@ class ApplicationController < ActionController::Base
     render render_on_fail and return unless recaptcha_success_v2
   end
 
+  def require_no_authentication
+    if cookies[:remember_token]
+      redirect_to root_url, alert: "Already authenticated!"
+    end
+  end
+
 end

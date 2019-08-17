@@ -6,8 +6,14 @@ class User < ApplicationRecord
     generate_token(:password_reset_token)
     self.password_reset_sent_at = Time.now.utc
     save!
-
     UserMailer.with(user: self).password_reset.deliver_now
+  end
+
+  def send_confirmation_instructions!
+    generate_token(:confirmation_token)
+    self.confirmation_sent_at = Time.now.utc
+    save!
+    UserMailer.with(user: self).email_confirmation.deliver_now
   end
 
   def forget_me!
