@@ -1,13 +1,14 @@
 module PrasDevise
   class PasswordResetsController < PrasDeviseController
 
-    before_action :load_recaptcha_secrets, only: %i(new create)
+    prepend_before_action :require_no_authentication
+    before_action :load_recaptcha_secrets
 
     def new
     end
 
     def create
-      check_captcha(action_to_render_on_fail: :new); return if performed?
+      check_captcha; return if performed?
       user = User.find_by(email: params[:email])
       user&.send_password_reset!
 
@@ -15,11 +16,12 @@ module PrasDevise
     end
 
     def edit
-      @user = User.find_by(password_reset_token: params[:id])
+      set_user
     end
 
     def update
-      @user = User.find_by(password_reset_token: params[:id])
+      set_user
+      check_captcha(render_on_fail: :edit); return if performed?
       if (Time.now.utc - @user.password_reset_sent_at) > 2.hours
         redirect_to new_password_reset_path, alert: "Password reset has expired!"
       elsif @user.update(password_update_params)
@@ -27,6 +29,10 @@ module PrasDevise
       else
         render :edit
       end
+    end
+
+    private def set_user
+      @user = User.find_by(password_reset_token: params[:id])
     end
 
     private def password_update_params

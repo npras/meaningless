@@ -81,10 +81,10 @@ class ApplicationController < ActionController::Base
     @v2_site_key, @v2_secret_key = v2_creds.values_at(:site_key, :secret_key)
   end
 
-  private def check_captcha(action_to_render_on_fail:)
+  private def check_captcha(render_on_fail: :new)
     recaptcha_success_v2 = verify_recaptcha(site_key: @v2_site_key,
                                             secret_key: @v2_secret_key)
-    render action_to_render_on_fail and return unless recaptcha_success_v2
+    render render_on_fail and return unless recaptcha_success_v2
   end
 
 end

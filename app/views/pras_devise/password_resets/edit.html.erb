@@ -22,5 +22,7 @@
     <%= f.password_field :password_confirmation %>
   </div>
 
-  <div class="actions"><%= f.submit "Reset password", data: { "disable-with": "Resetting..." } %></div>
+  <%= recaptcha_tags(site_key: @v2_site_key) %>
+
+  <div class="actions"><%= f.submit "Change my password", data: { "disable-with": "Resetting..." } %></div>
 <% end %>

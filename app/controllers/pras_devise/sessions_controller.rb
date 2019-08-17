@@ -8,7 +8,7 @@ module PrasDevise
     end
 
     def create
-      check_captcha(action_to_render_on_fail: :new); return if performed?
+      check_captcha; return if performed?
       if @user&.authenticate(params[:password])
         login!
         redirect_to after_sign_in_path_for(:user), notice: "Logged in!"

@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   # coming from signup form
   def create
     @user = User.new(user_params)
-    check_captcha(action_to_render_on_fail: :new); return if performed?
+    check_captcha; return if performed?
     @user.generate_token(:remember_token)
 
     if @user.save
