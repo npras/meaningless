@@ -13,7 +13,10 @@ class UserMailer < ApplicationMailer
 
   def email_confirmation
     @user = params[:user]
-    mail to: @user.unconfirmed_email, subject: "Confirmation instructions"
+    @email = @user.unconfirmed_email
+    @token = @user.confirmation_token
+
+    mail to: @email, subject: "Confirmation instructions"
   end
 
 end

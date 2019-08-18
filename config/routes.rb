@@ -5,9 +5,10 @@ Rails.application.routes.draw do
 
 
   resources :users
-  get 'confirm_email/:confirmation_token', to: 'users#confirm_email'
 
   scope module: :pras_devise do
+    resources :registrations, only: [:new, :create]
+    resources :confirmations, only: [:show]
     resources :sessions, only: [:new, :create, :destroy]
     resources :password_resets, only: [:new, :edit, :create, :update]
   end

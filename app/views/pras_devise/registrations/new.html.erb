@@ -1,6 +1,6 @@
 <h1>Sign Up</h1>
 
-<%= form_with model: @user, local: true do |f| %>
+<%= form_with model: @user, url: registrations_path, local: true do |f| %>
   <% if @user.errors.any? %>
     <div class="error_messages">
       <h2>Form is invalid</h2>
