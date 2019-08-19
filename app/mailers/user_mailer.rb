@@ -6,9 +6,9 @@ class UserMailer < ApplicationMailer
   #   en.user_mailer.password_reset.subject
   #
 
-  def password_reset
+  def email_password_reset
     @user = params[:user]
-    mail to: @user.email, subject: "Password Reset"
+    mail to: @user.email, subject: "Password reset instructions"
   end
 
   def email_confirmation

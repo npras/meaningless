@@ -6,14 +6,25 @@ class User < ApplicationRecord
     generate_token(:password_reset_token)
     self.password_reset_sent_at = Time.now.utc
     save!
-    UserMailer.with(user: self).password_reset.deliver_now
+    UserMailer.with(user: self).password_reset.deliver_later
   end
 
   def send_confirmation_instructions!
     generate_token(:confirmation_token)
     self.confirmation_sent_at = Time.now.utc
     save!
-    UserMailer.with(user: self).email_confirmation.deliver_now
+    UserMailer.with(user: self).email_confirmation.deliver_later
+  end
+
+  # token_type is:
+  # confirmation for confirmation_token,
+  # password_reset for password_reset_token
+  # etc.
+  def generate_token_and_send_instructions!(token_type:)
+    generate_token(:"#{token_type}_token")
+    self[:"#{token_type}_sent_at"] = Time.now.utc
+    save!
+    UserMailer.with(user: self).send(:"email_#{token_type}").deliver_later
   end
 
   def forget_me!

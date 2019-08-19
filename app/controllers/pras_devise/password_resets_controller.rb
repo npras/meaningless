@@ -10,12 +10,13 @@ module PrasDevise
     def create
       check_captcha; return if performed?
       user = User.find_by(email: params[:email])
-      user&.send_password_reset!
+      user&.generate_token_and_send_instructions!(token_type: :password_reset)
       redirect_to root_url, notice: "If you had registered, you'd receive password reset email shortly"
     end
 
     def edit
       set_user
+      redirect_to root_url, alert: "Cannot find user!" unless @user
     end
 
     def update

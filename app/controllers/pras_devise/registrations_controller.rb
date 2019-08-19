@@ -13,7 +13,7 @@ module PrasDevise
       check_captcha; return if performed?
       @user.unconfirmed_email = @user.email
       if @user.save
-        @user.send_confirmation_instructions!
+        @user.generate_token_and_send_instructions!(token_type: :confirmation)
         redirect_to root_url, notice: "Check your email with subject 'Confirmation instructions'"
       else
         render :new
