@@ -10,4 +10,18 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+
+  def generate_unique_email
+    @@email_count ||= 0
+    @@email_count += 1
+    "test#{@@email_count}@example.com"
+  end
+  
+  def valid_user_attributes(attributes={})
+    { name: "usertest",
+      email: generate_unique_email,
+      password: '12345678',
+      password_confirmation: '12345678' }.update(attributes)
+  end
+  
 end
