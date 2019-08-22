@@ -23,5 +23,10 @@ class ActiveSupport::TestCase
       password: '12345678',
       password_confirmation: '12345678' }.update(attributes)
   end
+
+  def assert_and_follow_redirect!
+    assert_response :redirect
+    follow_redirect!
+  end
   
 end
