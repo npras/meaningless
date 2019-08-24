@@ -9,22 +9,15 @@ module PrasDevise
     end
 
     def create
-      @user = User.new(user_params)
+      @user = User.find_or_initialize_by(unconfirmed_email: user_params[:email])
+      @user.attributes = user_params
       check_captcha; return if performed?
-      @user.unconfirmed_email = @user.email
       if @user.save
         @user.generate_token_and_send_instructions!(token_type: :confirmation)
         redirect_to root_url, notice: "Check your email with subject 'Confirmation instructions'"
       else
         render :new
       end
-      #@user.generate_token(:remember_token)
-      #if @user.save
-      #cookies.encrypted[:remember_token] = @user.remember_token # also login the user
-      #redirect_to root_url, notice: "Thank you for signing up! You are logged in."
-      #else
-      #render :new
-      #end
     end
 
     private def user_params

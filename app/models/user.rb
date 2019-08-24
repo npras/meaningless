@@ -2,6 +2,8 @@ class User < ApplicationRecord
 
   has_secure_password
 
+  CONFIRMATION_TOKEN_VALIDITY = 1.hour
+
   # token_type is:
   # confirmation for confirmation_token,
   # password_reset for password_reset_token
@@ -11,6 +13,10 @@ class User < ApplicationRecord
     self[:"#{token_type}_sent_at"] = Time.now.utc
     save!
     UserMailer.with(user: self).send(:"email_#{token_type}").deliver_later
+  end
+
+  def confirmation_token_expired?
+    (Time.now.utc - self.confirmation_sent_at) > CONFIRMATION_TOKEN_VALIDITY
   end
 
   def forget_me!

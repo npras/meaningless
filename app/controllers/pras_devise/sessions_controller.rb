@@ -25,7 +25,6 @@ module PrasDevise
       redirect_to root_url, notice: "Logged out!"
     end
 
-    # TODO: also make sure token is recently issued
     private def require_confirmation!
       if @user.confirmed_at.blank?
         # Don't give any clue
