@@ -10,7 +10,8 @@ class UserSignUpFlowsTest < ActionDispatch::IntegrationTest
     assert_emails 1 do
       post "/registrations", params: { user: user }
     end
-    assert_and_follow_redirect!
+    assert_redirected_to root_url
+    follow_redirect!
     assert_response :success
     assert_select 'div#notice', "Check your email with subject 'Confirmation instructions'"
     # 2. user attempts to login without confirming
@@ -25,7 +26,8 @@ class UserSignUpFlowsTest < ActionDispatch::IntegrationTest
     assert_select 'div#notice', "You are confirmed! You can now login."
     # 4. user can login now
     post '/sessions', params: { email: user[:email], password: user[:password] }
-    assert_and_follow_redirect!
+    assert_redirected_to root_url
+    follow_redirect!
     assert_select 'div#notice', "Logged in!"
   end
 
@@ -33,7 +35,8 @@ class UserSignUpFlowsTest < ActionDispatch::IntegrationTest
     user = users(:one)
     user.update(confirmation_token: 'blah', confirmation_sent_at: 1.hours.ago)
     get "/confirmations/#{user.id}?confirmation_token=#{user.confirmation_token}"
-    assert_and_follow_redirect!
+    assert_redirected_to new_registration_url
+    follow_redirect!
     assert_response :success
     assert_select 'div#alert', "Confirmation token has expired. Signup again."
   end
