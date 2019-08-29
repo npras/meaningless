@@ -81,5 +81,5 @@ test:
 production:
   <<: *default
   database: meaningless_production
-  username: meaningless
+  username: deploy
   password: <%= ENV['MEANINGLESS_DATABASE_PASSWORD'] %>
