@@ -58,3 +58,8 @@ gem 'http', '~> 4.1', '>= 4.1.1'
 gem 'bcrypt', '~> 3.1.7'
 gem 'recaptcha', '~> 5.1'
 gem 'annotate', '~> 2.7', '>= 2.7.5', group: :development
+
+gem 'capistrano', '~> 3.11'
+gem 'capistrano-rails', '~> 1.4'
+gem 'capistrano-passenger', '~> 0.2.0'
+gem 'capistrano-rbenv', '~> 2.1', '>= 2.1.4'
