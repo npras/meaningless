@@ -67,5 +67,16 @@ module PrasDevise
       end
     end
 
+    private def load_recaptcha_secrets
+      v2_creds = Rails.application.credentials.recaptcha[:v2]
+      @v2_site_key, @v2_secret_key = v2_creds.values_at(:site_key, :secret_key)
+    end
+
+    private def check_captcha(render_on_fail: :new)
+      recaptcha_success_v2 = verify_recaptcha(site_key: @v2_site_key,
+                                              secret_key: @v2_secret_key)
+      render render_on_fail and return unless recaptcha_success_v2
+    end
+
   end
 end
