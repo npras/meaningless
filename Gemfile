@@ -52,7 +52,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # app specific
-gem 'rack-cors', '~> 1.0', '>= 1.0.3'
+gem 'rack-cors', '~> 1.0'
 gem 'http', '~> 4.1', '>= 4.1.1'
 # Use Active Model has_secure_password
 gem 'bcrypt', '~> 3.1.7'
